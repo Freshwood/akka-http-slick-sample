@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import data.persistence.{PostgresComponent, UserRepository}
-import routes.TestRoutes
+import routes.UserRoutes
 
 import scala.concurrent.ExecutionContext
 
@@ -15,5 +15,5 @@ trait HttpService {
 
   lazy val userRepo: UserRepository = new UserRepository with PostgresComponent
 
-  lazy val routes: Route = new TestRoutes(userRepo).routes
+  lazy val routes: Route = new UserRoutes(userRepo).routes
 }

@@ -7,9 +7,13 @@ import data.persistence.UserRepository
 
 import scala.concurrent.ExecutionContext
 
-class TestRoutes(repo: UserRepository)(implicit ex: ExecutionContext) extends JsonProtocol {
+class UserRoutes(repo: UserRepository)(implicit ex: ExecutionContext) extends JsonProtocol {
 
-  val routes: Route = get {
-    complete(repo.getAll)
+  val routes: Route = pathPrefix("user") {
+    pathEndOrSingleSlash {
+      get {
+        complete(repo.getAll)
+      }
+    }
   }
 }
