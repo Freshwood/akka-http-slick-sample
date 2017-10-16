@@ -37,7 +37,7 @@ abstract class BaseTable[E <: Entity: ClassTag](tag: Tag,
                                                 schemaName: Option[String] = None)
     extends Table[E](tag, schemaName, tableName) {
 
-  val id: Rep[UUID] = column[UUID]("id", O.PrimaryKey, O.AutoInc)
+  val id: Rep[UUID] = column[UUID]("id", O.PrimaryKey)
   val created: Rep[Timestamp] = column[Timestamp]("created_at")
   val updated: Rep[Timestamp] = column[Timestamp]("updated_at")
   val deleted: Rep[Timestamp] = column[Timestamp]("deleted_at")
@@ -46,9 +46,9 @@ abstract class BaseTable[E <: Entity: ClassTag](tag: Tag,
 sealed trait Repository[E <: Entity] {
   def all: Future[Seq[E]]
   def byId(id: UUID): Future[Option[E]]
-  def insert(entity: E): Future[Int]
+  def insert(entity: E): Future[E]
   def update(entity: E): Future[Int]
-  def delete(entity: E): Future[Boolean]
+  def delete(id: UUID): Future[Boolean]
 }
 
 abstract class BaseRepo[E <: Entity, T <: BaseTable[E]](table: TableQuery[T])(
@@ -63,15 +63,15 @@ abstract class BaseRepo[E <: Entity, T <: BaseTable[E]](table: TableQuery[T])(
     table.filter(_.id === id).result.headOption
   }
 
-  override def insert(entity: E): Future[Int] = db.run {
-    table.insertOrUpdate(entity)
+  override def insert(entity: E): Future[E] = db.run {
+    table returning table += entity
   }
 
   override def update(entity: E): Future[Int] = db.run {
     table.update(entity)
   }
 
-  override def delete(entity: E): Future[Boolean] = db.run {
-    table.filter(_.id === entity.id).delete.map(_ > 0)
+  override def delete(id: UUID): Future[Boolean] = db.run {
+    table.filter(_.id === id).delete.map(_ > 0)
   }
 }
