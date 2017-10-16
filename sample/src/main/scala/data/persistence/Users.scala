@@ -6,23 +6,11 @@ import java.util.UUID
 import data.model.{Entity, User}
 import slick.lifted.{Rep, Tag}
 import slick.jdbc.PostgresProfile.api._
+import sun.reflect.generics.repository.AbstractRepository
+
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.existentials
+import scala.language.{existentials, postfixOps}
 import scala.reflect.ClassTag
-
-/**
-  * The [[BaseTable]] describes the basic [[Entity]]
-  */
-abstract class BaseTable[E <: Entity: ClassTag](tag: Tag,
-                                                tableName: String,
-                                                schemaName: Option[String] = None)
-    extends Table[E](tag, schemaName, tableName) {
-
-  val id: Rep[UUID] = column[UUID]("id", O.PrimaryKey, O.AutoInc)
-  val created: Rep[Timestamp] = column[Timestamp]("created_at")
-  val updated: Rep[Timestamp] = column[Timestamp]("updated_at")
-  val deleted: Rep[Timestamp] = column[Timestamp]("deleted_at")
-}
 
 class UserTable(tag: Tag) extends BaseTable[User](tag, "users") {
   val login = column[String]("login")
@@ -36,11 +24,16 @@ class UserTable(tag: Tag) extends BaseTable[User](tag, "users") {
     (id, login, pass, email, firstName.?, lastName.?, readOnly, created, updated.?, deleted.?) <> (User.tupled, User.unapply)
 }
 
-class UserRepository(implicit ex: ExecutionContext) extends DBComponent {
+class UserRepository(implicit ex: ExecutionContext)
+    extends BaseRepo[User, UserTable](TableQuery[UserTable])
+    with DBComponent {
 
   val table = TableQuery[UserTable]
 
-  def all: Future[Seq[User]] = db.run {
-    table.to[Seq].result
+  private val fullName: UserTable => Rep[String] = userTable =>
+    userTable.firstName ++ userTable.lastName
+
+  def allNames: Future[Seq[String]] = db.run {
+    table map fullName result
   }
 }
