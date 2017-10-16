@@ -35,7 +35,7 @@ trait HttpService {
   implicit lazy val ex: ExecutionContext = system.dispatcher
   implicit lazy val materializer: ActorMaterializer = ActorMaterializer()
 
-  lazy val userRepo: UserRepository = new UserRepository with PostgresComponent
+  lazy val userRepo: UserRepository = new UserRepository
 
   lazy val routes: Route = new UserRoutes(userRepo).routes
 }
@@ -69,41 +69,11 @@ private[persistence] object DB {
   lazy val connectionPool = Database.forConfig("database")
 }
 
-// One for production and one for test
-
-trait PostgresComponent extends DBComponent {
-
-  override val driver = slick.jdbc.PostgresProfile
-
-  import driver.api._
-
-  override val db: Database = DB.connectionPool
-}
-
-trait H2Component extends DBComponent {
-  override val driver = slick.jdbc.H2Profile
-
-  import driver.api._
-
-  override val db: Database = DB.connectionPool
-}
-
 ````
 
 ## Special
-In this example you can build up your desired repo with composition
-So what this means?
-I decided to use a way to create a database conjunction over composition and not over inheritance.
-So when you look at the ``HttpService`` you see the following:
-````scala
-// Production configuration
-lazy val userRepo: UserRepository = new UserRepository with PostgresComponent
-````
+In this example you have a ready to use generic repository which is based on UUID's. 
 
-When you want to testing then you can change this to this (Of course the test properties should point to the right H2 in memory database)
-````scala
-// Test configuration
-lazy val userRepo: UserRepository = new UserRepository with H2Component
-````
+You have one database configuration (from configuration). You can replace the configuration with a simple test configuration (see the test folder)
 
-So you have a simpler way to build your context with stackable traits
+You don't have to influence your code cause of in memory tests! 
