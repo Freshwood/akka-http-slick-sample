@@ -12,7 +12,7 @@ class UserRoutes(repo: UserRepository)(implicit ex: ExecutionContext) extends Js
   val routes: Route = pathPrefix("user") {
     pathEndOrSingleSlash {
       get {
-        complete(repo.getAll)
+        complete(repo.all)
       }
     }
   }

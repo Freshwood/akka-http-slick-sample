@@ -1,10 +1,10 @@
 CREATE TABLE users (
   id         UUID PRIMARY KEY,
   login      VARCHAR   NOT NULL,
-  pwdhash    VARCHAR   NOT NULL DEFAULT md5(random() :: TEXT),
+  password    VARCHAR   NOT NULL DEFAULT md5(random() :: TEXT),
   email      VARCHAR   NOT NULL,
-  firstname  VARCHAR,
-  lastname   VARCHAR,
+  first_name  VARCHAR,
+  last_name   VARCHAR,
   read_only  BOOLEAN   NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updated_at TIMESTAMP,

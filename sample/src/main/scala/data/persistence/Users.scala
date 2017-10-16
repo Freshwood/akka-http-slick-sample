@@ -1,71 +1,46 @@
 package data.persistence
 
+import java.sql.Timestamp
 import java.util.UUID
 
-import data.model.User
-import slick.jdbc.JdbcProfile
+import data.model.{Entity, User}
+import slick.lifted.{Rep, Tag}
+import slick.jdbc.PostgresProfile.api._
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.existentials
+import scala.reflect.ClassTag
 
-import scala.concurrent.Future
+/**
+  * The [[BaseTable]] describes the basic [[Entity]]
+  */
+abstract class BaseTable[E <: Entity: ClassTag](tag: Tag,
+                                                tableName: String,
+                                                schemaName: Option[String] = None)
+    extends Table[E](tag, schemaName, tableName) {
 
-private[persistence] object DB {
-
-  import slick.jdbc.PostgresProfile.api._
-
-  lazy val connectionPool = Database.forConfig("database")
+  val id: Rep[UUID] = column[UUID]("id", O.PrimaryKey, O.AutoInc)
+  val created: Rep[Timestamp] = column[Timestamp]("created_at")
+  val updated: Rep[Timestamp] = column[Timestamp]("updated_at")
+  val deleted: Rep[Timestamp] = column[Timestamp]("deleted_at")
 }
 
-trait DBComponent {
+class UserTable(tag: Tag) extends BaseTable[User](tag, "users") {
+  val login = column[String]("login")
+  val pass = column[String]("password")
+  val email = column[String]("email")
+  val firstName = column[String]("first_name")
+  val lastName = column[String]("last_name")
+  val readOnly = column[Boolean]("read_only")
 
-  val driver: JdbcProfile
-
-  import driver.api._
-
-  val db: Database
-
+  def * =
+    (id, login, pass, email, firstName.?, lastName.?, readOnly, created, updated.?, deleted.?) <> (User.tupled, User.unapply)
 }
 
-trait PostgresComponent extends DBComponent {
+class UserRepository(implicit ex: ExecutionContext) extends DBComponent {
 
-  override val driver = slick.jdbc.PostgresProfile
+  val table = TableQuery[UserTable]
 
-  import driver.api._
-
-  override val db: Database = DB.connectionPool
-}
-
-trait H2Component extends DBComponent {
-  override val driver = slick.jdbc.H2Profile
-
-  import driver.api._
-
-  override val db: Database = DB.connectionPool
-}
-
-trait UserTable {
-  this: DBComponent =>
-
-  import driver.api._
-
-  protected val userTableQuery = TableQuery[UserTable]
-
-  class UserTable(tag: Tag) extends Table[User](tag, "users") {
-    val id = column[UUID]("id", O.PrimaryKey, O.AutoInc)
-    val login = column[String]("login")
-    val email = column[String]("email")
-
-    def * = (id, login, email) <> (User.tupled, User.unapply)
+  def all: Future[Seq[User]] = db.run {
+    table.to[Seq].result
   }
 }
-
-class UserRepository extends UserTable {
-  this: DBComponent =>
-
-  import driver.api._
-
-  def getAll: Future[Seq[User]] = db.run {
-    userTableQuery.to[Seq].result
-  }
-}
-
-trait UserRepo extends UserRepository with PostgresComponent
-trait UserRepoTest extends UserRepository with H2Component
