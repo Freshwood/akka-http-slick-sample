@@ -1,16 +1,11 @@
 package data.persistence
 
-import java.sql.Timestamp
-import java.util.UUID
-
-import data.model.{Entity, User}
-import slick.lifted.{Rep, Tag}
+import data.model.User
 import slick.jdbc.PostgresProfile.api._
-import sun.reflect.generics.repository.AbstractRepository
+import slick.lifted.{Rep, Tag}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.{existentials, postfixOps}
-import scala.reflect.ClassTag
 
 class UserTable(tag: Tag) extends BaseTable[User](tag, "users") {
   val login = column[String]("login")

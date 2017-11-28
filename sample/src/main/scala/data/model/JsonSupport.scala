@@ -10,7 +10,7 @@ trait BaseJsonProtocol extends DefaultJsonProtocol {
   implicit val timestampFormat: JsonFormat[Timestamp] = new JsonFormat[Timestamp] {
     override def write(obj: Timestamp): JsValue = JsString(obj.toString)
 
-    override def read(json: JsValue): Timestamp = Timestamp.valueOf(json.prettyPrint)
+    override def read(json: JsValue): Timestamp = Timestamp.valueOf(json.toString())
   }
 
   implicit val uuidJsonFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
