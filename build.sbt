@@ -6,7 +6,7 @@ lazy val organizationName = "net.softler"
 
 lazy val projectVersion = "0.0.1"
 
-scalaVersion in ThisBuild := "2.12.3"
+scalaVersion in ThisBuild := "2.12.4"
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
