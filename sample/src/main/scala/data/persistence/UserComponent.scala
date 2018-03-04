@@ -5,6 +5,11 @@ import data.model.User
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.{existentials, postfixOps}
 
+/**
+  * A sample implementation of the user entity
+  * Just define a user table and then the user repository
+  * which we can use for services
+  */
 trait UserComponent extends RepoDefinition { this: DB =>
 
   import driver.api._

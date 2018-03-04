@@ -7,6 +7,11 @@ import data.persistence.UserComponent
 
 import scala.concurrent.ExecutionContext
 
+/**
+  * The user REST routes which defines in which way the REST service
+  * should match the incoming requests
+  * In this case we just returning the WHOLE database users (Sample)
+  */
 class UserRoutes(repo: UserComponent#UserRepository)(implicit ex: ExecutionContext)
     extends JsonProtocol {
 

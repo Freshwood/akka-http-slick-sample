@@ -8,6 +8,12 @@ import routes.UserRoutes
 
 import scala.concurrent.ExecutionContext
 
+/**
+  * A simple http reset service which act as dependency injection
+  * Creates a user db, so the routes can fetch data to response to the user
+  * Make sure you integrate a service layer in production environment
+  * This is only a sample and should not be used in production
+  */
 trait HttpService extends UserComponent with DB {
   implicit lazy val system: ActorSystem = ActorSystem()
   implicit lazy val ex: ExecutionContext = system.dispatcher

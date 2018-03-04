@@ -1,12 +1,13 @@
 package data.flyway
 
+import config.UserSampleConfig
 import org.flywaydb.core.Flyway
 
 import scala.util.Try
 
 /**
   * Database migrations
-  *
+  * Just for this sample don't use this in production (repair and migrate)
   */
 class FlywayService(jdbcUrl: String, dbUser: String, dbPassword: String) {
 
@@ -19,4 +20,10 @@ class FlywayService(jdbcUrl: String, dbUser: String, dbPassword: String) {
   }
 
   def dropDatabase(): Unit = flyway.clean()
+}
+
+trait FlywayIntegration extends UserSampleConfig {
+  val flyWayService = new FlywayService(jdbcUrl, dbUser, dbPassword)
+
+  flyWayService.migrateDatabaseSchema()
 }
