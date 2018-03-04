@@ -12,6 +12,45 @@ javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
 enablePlugins(JavaServerAppPackaging)
 
+lazy val library = new {
+
+  object Version {
+    val akka = "2.5.4"
+    val akkaHttp = "10.0.10"
+    val flyway = "3.2.1"
+    val scalaTest = "3.0.1"
+    val logbackVersion = "1.2.3"
+    val slick = "3.2.1"
+  }
+
+  val logBack: ModuleID = "ch.qos.logback" % "logback-classic" % Version.logbackVersion
+
+  val flyway: ModuleID = "org.flywaydb" % "flyway-core" % Version.flyway
+
+  val scalaTest: ModuleID = "org.scalatest" %% "scalatest" % Version.scalaTest
+
+  lazy val akka: Seq[ModuleID] = Seq(
+    "com.typesafe.akka" %% "akka-actor" % Version.akka,
+    "com.typesafe.akka" %% "akka-stream" % Version.akka,
+    "com.typesafe.akka" %% "akka-slf4j" % Version.akka,
+    "com.typesafe.akka" %% "akka-testkit" % Version.akka % Test
+  )
+
+  val akkaHttp: Seq[ModuleID] = Seq(
+    "com.typesafe.akka" %% "akka-http" % Version.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-core" % Version.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-testkit" % Version.akkaHttp % "test"
+  )
+
+  val slick: Seq[ModuleID] = Seq(
+    "com.typesafe.slick" %% "slick" % Version.slick,
+    "com.typesafe.slick" %% "slick-hikaricp" % Version.slick,
+    "org.postgresql" % "postgresql" % "9.4.1211",
+    "com.h2database" % "h2" % "1.4.192" % "test"
+  )
+}
+
 lazy val resolver = Seq(
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
   "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
@@ -48,15 +87,15 @@ def commonSettings(projectName: String) =
     updateOptions := updateOptions.value.withLatestSnapshots(true),
     // Activate this, when the dependencies need to be compiled very often
     updateOptions := updateOptions.value.withCachedResolution(true),
-    libraryDependencies += Dependencies.scalaTest
+    libraryDependencies += library.scalaTest % Test
   ) ++ codeQualitySettings
 
 
 lazy val akkaHttpSlickSample = (project in file("sample"))
   .settings(commonSettings("akka-http-slick-sample"))
   .settings(
-    libraryDependencies ++= Dependencies.akka ++ Dependencies.akkaHttp ++ Dependencies.slick ++
-      Seq(Dependencies.flyway, Dependencies.logBack),
+    libraryDependencies ++= library.akka ++ library.akkaHttp ++ library.slick ++
+      Seq(library.flyway, library.logBack),
     logBuffered := false
   )
 
