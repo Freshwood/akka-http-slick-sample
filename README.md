@@ -1,6 +1,6 @@
 # akka-http-slick-sample
 This is just a sample application with akka http and slick
-
+[![Build Status](https://travis-ci.org/Freshwood/akka-http-slick-sample.svg?branch=master)](https://travis-ci.org/Freshwood/akka-http-slick-sample)
 
 ## Goal
 Make a simple application which shows the devs how to use these great libs

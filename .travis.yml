@@ -1,0 +1,15 @@
+# use Docker-based container (instead of OpenVZ)
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2/repository
+    - $HOME/.sbt
+    - $HOME/.ivy2
+
+language: scala
+scala:
+  - 2.12.4
+jdk:
+  - oraclejdk8
+script: "sbt clean test"
