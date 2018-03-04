@@ -76,7 +76,7 @@ trait RepoDefinition extends TableDefinition { this: DB =>
     }
 
     override def update(entity: E): Future[Int] = db.run {
-      table.update(entity)
+      table.insertOrUpdate(entity)
     }
 
     override def delete(id: UUID): Future[Boolean] = db.run {
