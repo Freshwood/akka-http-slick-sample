@@ -3,7 +3,7 @@ package data
 import java.util.UUID
 
 import akka.actor.ActorSystem
-import data.persistence.UserRepository
+import data.persistence.{H2, UserComponent}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 
@@ -15,7 +15,13 @@ import scala.language.postfixOps
   * @author Freshwood
   * @since 16.10.2017
   */
-class RepositoryTest extends FlatSpec with Matchers with BeforeAndAfterAll with ScalaFutures {
+class RepositoryTest
+    extends FlatSpec
+    with Matchers
+    with BeforeAndAfterAll
+    with ScalaFutures
+    with UserComponent
+    with H2 {
 
   implicit val system: ActorSystem = ActorSystem("test-actor-system")
   implicit val ex: ExecutionContext = system.dispatcher
