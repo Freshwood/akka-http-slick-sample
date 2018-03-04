@@ -15,10 +15,10 @@ enablePlugins(JavaServerAppPackaging)
 lazy val library = new {
 
   object Version {
-    val akka = "2.5.4"
-    val akkaHttp = "10.0.10"
+    val akka = "2.5.11"
+    val akkaHttp = "10.0.11"
     val flyway = "3.2.1"
-    val scalaTest = "3.0.1"
+    val scalaTest = "3.0.4"
     val logbackVersion = "1.2.3"
     val slick = "3.2.1"
   }
@@ -62,7 +62,7 @@ lazy val codeQualitySettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",
     "-encoding",
-    "UTF-8", // yes, this is 2 args
+    "UTF-8",
     "-feature",
     "-unchecked",
     "-Ywarn-numeric-widen",
@@ -84,9 +84,6 @@ def commonSettings(projectName: String) =
     name := projectName,
     version := projectVersion,
     resolvers ++= resolver,
-    updateOptions := updateOptions.value.withLatestSnapshots(true),
-    // Activate this, when the dependencies need to be compiled very often
-    updateOptions := updateOptions.value.withCachedResolution(true),
     libraryDependencies += library.scalaTest % Test
   ) ++ codeQualitySettings
 
