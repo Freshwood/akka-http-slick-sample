@@ -20,7 +20,6 @@ class RepositoryTest
     extends TestKit(ActorSystem("test-system"))
     with FlatSpecLike
     with Matchers
-    with BeforeAndAfterAll
     with ScalaFutures
     with UserComponent
     with H2 {
@@ -33,7 +32,7 @@ class RepositoryTest
 
   override implicit def patienceConfig: PatienceConfig = PatienceConfig(5 seconds)
 
-  "The generic rapository" should "handle a in memory database" in {
+  "The generic repository" should "handle a in memory database" in {
     whenReady(repo.all)(_.size shouldBe 3)
   }
 
@@ -61,10 +60,5 @@ class RepositoryTest
     }
 
     whenReady(repo.all)(_.size shouldBe 2)
-  }
-
-  override def afterAll(): Unit = {
-    system.terminate()
-    println("Triggered actor shutdown")
   }
 }

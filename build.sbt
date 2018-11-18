@@ -1,26 +1,17 @@
 import sbt.Keys._
 
-lazy val rootProjectName = "akka-http-slick"
-
-lazy val organizationName = "net.softler"
-
-lazy val projectVersion = "0.0.1"
-
-scalaVersion in ThisBuild := "2.12.4"
-
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
-
-enablePlugins(JavaServerAppPackaging)
-
+// *****************************************************************************
+// Library dependencies
+// *****************************************************************************
 lazy val library = new {
 
   object Version {
-    val akka = "2.5.11"
-    val akkaHttp = "10.0.11"
+    val akka = "2.5.18"
+    val akkaHttp = "10.1.5"
     val flyway = "3.2.1"
-    val scalaTest = "3.0.4"
+    val scalaTest = "3.0.5"
     val logbackVersion = "1.2.3"
-    val slick = "3.2.1"
+    val slick = "3.2.3"
   }
 
   val logBack: ModuleID = "ch.qos.logback" % "logback-classic" % Version.logbackVersion
@@ -51,55 +42,58 @@ lazy val library = new {
   )
 }
 
-lazy val resolver = Seq(
-  "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-  "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-)
+// *****************************************************************************
+// Settings
+// *****************************************************************************
 
-lazy val codeQualitySettings = Seq(
-  ivyLoggingLevel := UpdateLogging.DownloadOnly,
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-encoding",
-    "UTF-8",
-    "-feature",
-    "-unchecked",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-value-discard",
-    "-Xfatal-warnings",
-    "-Yno-adapted-args",
-    "-Xfuture"
-  ),
-  scalastyleFailOnError := true,
-  coverageEnabled in Test := true,
-  coverageMinimum in Test := 80,
-  coverageFailOnMinimum in Test := false,
-  coverageHighlighting in Test := true
-)
+lazy val settings = projectSettings
 
-def commonSettings(projectName: String) =
+lazy val projectSettings =
   Seq(
-    organization := organizationName,
-    name := projectName,
-    version := projectVersion,
-    resolvers ++= resolver,
-    libraryDependencies += library.scalaTest % Test
-  ) ++ codeQualitySettings
+    scalaVersion := "2.12.7",
+    organization := "net.softler",
+    version := "0.0.1",
+    organizationName := "Tobias Frischholz",
+    startYear := Some(2017),
+    licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+    javacOptions ++= Seq("-source", "1.8"),
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-encoding",
+      "UTF-8",
+      "-feature",
+      "-unchecked",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Xfatal-warnings",
+      "-Yno-adapted-args",
+      "-Xfuture"
+    ),
+    sources in (Compile, doc) := Seq.empty,
+    scalastyleFailOnError := true,
+    coverageEnabled in Test := true,
+    coverageMinimum in Test := 80,
+    coverageFailOnMinimum in Test := false,
+    coverageHighlighting in Test := true
+  )
 
+// *****************************************************************************
+// Projects
+// *****************************************************************************
 
-lazy val akkaHttpSlickSample = (project in file("sample"))
-  .settings(commonSettings("akka-http-slick-sample"))
+lazy val `akka-http-slick-sample` = (project in file("sample"))
+  .enablePlugins(JavaServerAppPackaging)
+  .settings(settings)
   .settings(
     libraryDependencies ++= library.akka ++ library.akkaHttp ++ library.slick ++
-      Seq(library.flyway, library.logBack),
+      Seq(library.flyway, library.logBack, library.scalaTest % Test),
     logBuffered := false
   )
 
 lazy val root = (project in file("."))
-  .settings(commonSettings(rootProjectName))
+  .settings(settings)
   .settings(
     aggregate in update := false,
     publishArtifact := false
   )
-  .aggregate(akkaHttpSlickSample)
+  .aggregate(`akka-http-slick-sample`)
