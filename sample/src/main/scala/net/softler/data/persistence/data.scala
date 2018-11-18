@@ -1,9 +1,9 @@
-package data.persistence
+package net.softler.data.persistence
 
 import java.sql.Timestamp
 import java.util.UUID
 
-import data.model.Entity
+import net.softler.data.model.Entity
 import slick.jdbc.JdbcProfile
 import slick.lifted
 

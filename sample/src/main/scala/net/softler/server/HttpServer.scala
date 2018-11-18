@@ -1,10 +1,10 @@
-package server
+package net.softler.server
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
-import config.UserSampleConfig
+import net.softler.config.UserSampleConfig
 
 import scala.concurrent.ExecutionContext
 

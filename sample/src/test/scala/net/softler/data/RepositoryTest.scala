@@ -1,11 +1,11 @@
-package data
+package net.softler.data
 
 import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.testkit.TestKit
-import data.model.User
-import data.persistence.{H2, UserComponent}
+import net.softler.data.model.User
+import net.softler.data.persistence.{H2, UserComponent}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 

@@ -1,4 +1,4 @@
-package config
+package net.softler.config
 
 import com.typesafe.config.ConfigFactory
 

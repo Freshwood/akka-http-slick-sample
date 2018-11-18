@@ -1,6 +1,6 @@
-package data.persistence
+package net.softler.data.persistence
 
-import data.model.User
+import net.softler.data.model.User
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.{existentials, postfixOps}

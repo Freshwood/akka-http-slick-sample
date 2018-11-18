@@ -1,4 +1,4 @@
-package data.model
+package net.softler.data.model
 
 import java.sql.Timestamp
 import java.time.Instant

@@ -1,6 +1,6 @@
-package data.flyway
+package net.softler.data.flyway
 
-import config.UserSampleConfig
+import net.softler.config.UserSampleConfig
 import org.flywaydb.core.Flyway
 
 import scala.util.Try
