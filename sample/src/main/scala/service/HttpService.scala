@@ -2,7 +2,7 @@ package service
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Materializer}
 import data.persistence.{DB, UserComponent}
 import routes.UserRoutes
 
@@ -16,8 +16,8 @@ import scala.concurrent.ExecutionContext
   */
 trait HttpService extends UserComponent with DB {
   implicit lazy val system: ActorSystem = ActorSystem()
-  implicit lazy val ex: ExecutionContext = system.dispatcher
-  implicit lazy val materializer: ActorMaterializer = ActorMaterializer()
+  implicit lazy val materializer: Materializer = ActorMaterializer()
+  implicit lazy val ec: ExecutionContext = system.dispatcher
 
   lazy val userRepo: UserRepository = new UserRepository
 

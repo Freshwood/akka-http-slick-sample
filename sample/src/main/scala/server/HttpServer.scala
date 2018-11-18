@@ -13,7 +13,7 @@ trait HttpServer extends UserSampleConfig {
 
   implicit def materializer: Materializer
 
-  implicit def ex: ExecutionContext
+  implicit def ec: ExecutionContext
 
   def routes: Route
 
