@@ -1,0 +1,1 @@
+docker run -p 5433:5432 --name akka-http-slick-pg -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=Admin12! -e POSTGRES_DB=sample -d postgres
